@@ -9,16 +9,14 @@ async function rabbitMQConnection() {
         const url = process.env.RABBITMQ_URL
         rabbitMQConnectionInstance = await amqp.connect(url)
         rabbitMQChannelInstance = await rabbitMQConnectionInstance.createChannel()
-        await rabbitMQChannelInstance.assertQueue("notification")
+        await rabbitMQChannelInstance.assertQueue("notification_status_to_viewed")
 
-        rabbitMQChannelInstance.consume("notification", async (data) => {
-            const item = JSON.parse(data.content.toString())
-
-            console.log(item)
+        rabbitMQChannelInstance.consume("notification_status_to_viewed", async (data) => {
+            const notification = JSON.parse(data.content.toString())
 
             try {
-                const response = await got.post('http://localhost:8000/just-list/notification/update_notification_status');
-                console.log('response', response.body)
+
+                await got.post(`http://localhost:8000/just-list/notification/update_notification_status_to_viewed/${notification.id}`);
                 rabbitMQChannelInstance.ack(data)
 
             } catch (e) {

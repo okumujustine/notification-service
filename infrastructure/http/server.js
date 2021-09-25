@@ -28,7 +28,7 @@ app.use(cors({
 users = {}
 
 io.on('connection', (socket) => {
-
+    console.log("user connected to socket")
     socket.on('join', (userDetails) => {
         users[userDetails.user] = socket.id
     })
