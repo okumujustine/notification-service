@@ -6,10 +6,11 @@ require('dotenv').config()
 const cookieSession = require("cookie-session")
 const cors = require('cors')
 const routes = require('./routes/index')
+require('./rabbitmq-connection')
+var NotificationSchema = require("../database/schema/Notification")
+
 const app = express()
 const server = http.createServer(app)
-
-var NotificationSchema = require("../database/schema/Notification")
 
 const io = socketio(server, {
     cors: {
@@ -49,6 +50,7 @@ app.use(cookieSession({
     name: "todoList2021xStyling",
     signed: false
 }))
+
 
 app.use("/just-list", routes)
 
